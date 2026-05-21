@@ -29,3 +29,8 @@ PATH_SDK_WINDDK71 := C:/vboxdeps/ddk71/WinDDK/7600.16385.win7_wdk.100208-1538
 VBOX_VENDOR := System Firmware
 VBOX_VENDOR_SHORT := System
 VBOX_PRODUCT := Platform Runtime
+
+# The source tarball is now a local git repository for publishing.  Without a
+# numeric build revision, kBuild derives an empty IPRT_BLDCFG_SCM_REV from git
+# metadata and breaks Runtime/common/misc/buildconfig.cpp.
+VBOX_SVN_REV := 167084
