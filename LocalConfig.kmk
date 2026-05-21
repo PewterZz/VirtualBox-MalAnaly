@@ -1,0 +1,31 @@
+VBOX_WITHOUT_HARDENING := 1
+VBOX_WITHOUT_CONTROL_FLOW_GUARD := 1
+VBOX_WITH_TESTCASES :=
+VBOX_WITH_VALIDATIONKIT :=
+VBOX_WITHOUT_DOCS := 1
+VBOX_WITH_DOCS :=
+VBOX_WITH_DOCS_HTML :=
+VBOX_WITH_DOCS_PACKING :=
+VBOX_WITH_DOCS_QHELP :=
+VBOX_WITH_DOCS_QHELP_PACKING :=
+VBOX_WITH_DOCS_TRANSLATIONS :=
+VBOX_WITH_QTGUI :=
+VBOX_WITH_SDL :=
+VBOX_WITHOUT_ADDITIONS := 1
+VBOX_WITHOUT_ADDITIONS_ISO := 1
+VBOX_WITH_WEBSERVICES :=
+VBOX_WITH_NATIVE_NEM :=
+VBOX_WITH_DRIVERLESS_NEM_FALLBACK :=
+VBOX_WITHOUT_PGM_NEM_MODE := 1
+
+# Build the Windows ring-0 modules against the extracted WDK 7.1 tree so
+# kernel headers such as ntifs.h are available to VMMR0.
+VBOX_WINDDK := WINDDK71
+PATH_SDK_WINDDK71 := C:/vboxdeps/ddk71/WinDDK/7600.16385.win7_wdk.100208-1538
+
+# Developer-build product strings. These do not change COM class names, but
+# avoid baking the public Oracle/VirtualBox branding into firmware-visible data
+# generated from build variables.
+VBOX_VENDOR := System Firmware
+VBOX_VENDOR_SHORT := System
+VBOX_PRODUCT := Platform Runtime

@@ -1,0 +1,14 @@
+# Local build output
+/out/
+/env.bat
+/configure.log
+
+# Local build configuration generated for this machine
+/AutoConfig.kmk
+
+# Editor and OS noise
+/.vs/
+*.user
+*.suo
+Thumbs.db
+Desktop.ini
