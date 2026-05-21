@@ -2921,7 +2921,7 @@ static void acpiR3PrepareHeader(PACPISTATE pThis, ACPITBLHEADER *header,
     header->u32Length             = RT_H2LE_U32(u32Length);
     header->u8Revision            = u8Revision;
     memcpy(header->au8OemId, pThis->au8OemId, 6);
-    memcpy(header->au8OemTabId, "VBOX", 4);
+    memcpy(header->au8OemTabId, "AMI ", 4);
     memcpy(header->au8OemTabId+4, au8Signature, 4);
     header->u32OemRevision        = RT_H2LE_U32(1);
     memcpy(header->au8CreatorId, pThis->au8CreatorId, 4);
@@ -4384,6 +4384,7 @@ static DECLCALLBACK(int) acpiR3Construct(PPDMDEVINS pDevIns, int iInstance, PCFG
                                   "|TpmMmioAddress"
                                   "|SsdtTpmFilePath"
                                   "|GcmPatchIdOnAcpiEnable"
+                                  "|VenDevId"
                                   , "");
 
     /* query whether we are supposed to present an IOAPIC */
@@ -4394,6 +4395,11 @@ static DECLCALLBACK(int) acpiR3Construct(PPDMDEVINS pDevIns, int iInstance, PCFG
     rc = pHlp->pfnCFGMQueryU16Def(pCfg, "NumCPUs", &pThis->cCpus, 1);
     if (RT_FAILURE(rc))
         return PDMDEV_SET_ERROR(pDevIns, rc, N_("Configuration error: Querying \"NumCPUs\" as integer failed"));
+
+    uint32_t u32VenDevId;
+    rc = pHlp->pfnCFGMQueryU32Def(pCfg, "VenDevId", &u32VenDevId, 0);
+    if (RT_FAILURE(rc))
+        return PDMDEV_SET_ERROR(pDevIns, rc, N_("Configuration error: Failed to read \"VenDevId\""));
 
     /* query whether we are supposed to present an FDC controller */
     rc = pHlp->pfnCFGMQueryBoolDef(pCfg, "FdcEnabled", &pThis->fUseFdc, true);
@@ -4867,6 +4873,11 @@ static DECLCALLBACK(int) acpiR3Construct(PPDMDEVINS pDevIns, int iInstance, PCFG
 
     PDMPciDevSetVendorId(pPciDev,      0x8086); /* Intel */
     PDMPciDevSetDeviceId(pPciDev,      0x7113); /* 82371AB */
+    if (u32VenDevId)
+    {
+        PDMPciDevSetVendorId(pPciDev,  u32VenDevId >> 16);
+        PDMPciDevSetDeviceId(pPciDev,  u32VenDevId & UINT32_C(0xffff));
+    }
 
     /* See p. 50 of PIIX4 manual */
     PDMPciDevSetCommand(pPciDev,       PCI_COMMAND_IOACCESS);

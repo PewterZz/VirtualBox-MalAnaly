@@ -1446,6 +1446,7 @@ static DECLCALLBACK(int)  pcbiosConstruct(PPDMDEVINS pDevIns, int iInstance, PCF
                                   "|DmiBoardAssetTag"
                                   "|DmiBoardBoardType"
                                   "|DmiBoardLocInChass"
+                                  "|DmiBoardLocInChassis"
                                   "|DmiBoardProduct"
                                   "|DmiBoardSerial"
                                   "|DmiBoardVendor"
@@ -1456,6 +1457,8 @@ static DECLCALLBACK(int)  pcbiosConstruct(PPDMDEVINS pDevIns, int iInstance, PCF
                                   "|DmiChassisVendor"
                                   "|DmiChassisVersion"
                                   "|DmiProcManufacturer"
+                                  "|DmiProcFamily"
+                                  "|DmiProcSocket"
                                   "|DmiProcVersion"
                                   "|DmiOEMVBoxVer"
                                   "|DmiOEMVBoxRev"
@@ -1465,7 +1468,21 @@ static DECLCALLBACK(int)  pcbiosConstruct(PPDMDEVINS pDevIns, int iInstance, PCF
                                   "|CheckShutdownStatusForSoftReset"
                                   "|ClearShutdownStatusOnHardReset"
                                   ,
-                                  "NetBoot");
+                                  "NetBoot"
+                                  "|DmiMemorySlot0"
+                                  "|DmiMemorySlot1"
+                                  "|DmiPortConnector0"
+                                  "|DmiPortConnector1"
+                                  "|DmiPortConnector2"
+                                  "|DmiPortConnector3"
+                                  "|DmiPortConnector4"
+                                  "|DmiPortConnector5"
+                                  "|DmiPortConnector6"
+                                  "|DmiPortConnector7"
+                                  "|DmiPortConnector8"
+                                  "|DmiPortConnector9"
+                                  "|DmiPortConnector10"
+                                  "|DmiPortConnector11");
     /*
      * Init the data.
      */
@@ -2086,4 +2103,3 @@ const PDMDEVREG g_DevicePcBios =
 #endif
     /* .u32VersionEnd = */          PDM_DEVREG_VERSION
 };
-

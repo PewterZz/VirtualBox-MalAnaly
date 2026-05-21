@@ -25,7 +25,7 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-DefinitionBlock ("DSDT.aml", "DSDT", 2, "VBOX  ", "VBOXBIOS", 2)
+DefinitionBlock ("DSDT.aml", "DSDT", 2, "ALASKA", "A M I   ", 2)
 {
     // Declare debugging ports withing SystemIO
     OperationRegion(DBG0, SystemIO, 0x3000, 4)
@@ -1490,8 +1490,8 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "VBOX  ", "VBOXBIOS", 2)
                     0x04,       // Battery capacity granularity 2
                     "1",        // Model number
                     "0",        // Serial number
-                    "VBOX",     // Battery type
-                    "innotek"   // OEM Information
+                    "Li-Ion",    // Battery type
+                    "ASUSTeK"   // OEM Information
                 })
 
                 Name (PBST, Package () {
@@ -1965,6 +1965,11 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "VBOX  ", "VBOXBIOS", 2)
         })
     }
 
+    Name (_S3, Package (2) {
+        0x03,
+        0x03,
+    })
+
     If (And(PWRS, ShiftLeft(One,4))) {
         Name (_S4, Package (2) {
             0x05,
@@ -1982,6 +1987,7 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "VBOX  ", "VBOXBIOS", 2)
         DBG ("Prepare to sleep: ")
         HEX (Arg0)
     }
+
 }
 
 /*

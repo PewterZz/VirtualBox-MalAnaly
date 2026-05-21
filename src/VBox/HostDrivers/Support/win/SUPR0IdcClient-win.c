@@ -46,7 +46,7 @@
 *   Defined Constants And Macros                                                                                                 *
 *********************************************************************************************************************************/
 /** NT Device name. */
-#define DEVICE_NAME_NT   L"\\Device\\VBoxDrv"
+#define DEVICE_NAME_NT   L"\\Device\\VBoxMalDrv"
 
 
 /**
@@ -164,4 +164,3 @@ int VBOXCALL supR0IdcNativeCall(PSUPDRVIDCHANDLE pHandle, uint32_t uReq, PSUPDRV
 {
     return supR0IdcNtCallInternal(pHandle->s.pDeviceObject, pHandle->s.pFileObject, uReq, pReq);
 }
-

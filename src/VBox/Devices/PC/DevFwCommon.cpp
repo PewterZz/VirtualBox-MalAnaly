@@ -991,10 +991,10 @@ int FwCommonPlantDMITable(PPDMDEVINS pDevIns, uint8_t *pTable, unsigned cbMax, P
 
         uint8_t u8Tmp = 0;
         char szTmp[64];
-        RTStrPrintf(szTmp, sizeof(szTmp), "vboxVer_%u.%u.%u",
+        RTStrPrintf(szTmp, sizeof(szTmp), "biosVer_%u.%u.%u",
                     RTBldCfgVersionMajor(), RTBldCfgVersionMinor(), RTBldCfgVersionBuild());
         DMI_READ_CFG_STR_DEF(u8Tmp, "DmiOEMVBoxVer", szTmp);
-        RTStrPrintf(szTmp, sizeof(szTmp), "vboxRev_%u", RTBldCfgRevision());
+        RTStrPrintf(szTmp, sizeof(szTmp), "biosRev_%u", RTBldCfgRevision());
         DMI_READ_CFG_STR_DEF(u8Tmp, "DmiOEMVBoxRev", szTmp);
         DMI_TERM_STRUCT;
 

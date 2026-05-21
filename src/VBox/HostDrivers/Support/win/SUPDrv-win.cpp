@@ -79,12 +79,12 @@
 *   Defined Constants And Macros                                                                                                 *
 *********************************************************************************************************************************/
 /** The support service name. */
-#define SERVICE_NAME    "VBoxDrv"
+#define SERVICE_NAME    "VBoxMalDrv"
 /** The Pool tag (VBox). */
 #define SUPDRV_NT_POOL_TAG  'xoBV'
 
 /** NT device name for user access. */
-#define DEVICE_NAME_NT_USR          L"\\Device\\VBoxDrvU"
+#define DEVICE_NAME_NT_USR          L"\\Device\\VBoxMalDrvU"
 #ifdef VBOX_WITH_HARDENING
 /** Macro for checking for deflecting calls to the stub device. */
 # define VBOXDRV_COMPLETE_IRP_AND_RETURN_IF_STUB_DEV(a_pDevObj, a_pIrp) \

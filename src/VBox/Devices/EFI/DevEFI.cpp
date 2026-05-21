@@ -1546,6 +1546,7 @@ static DECLCALLBACK(int)  efiConstruct(PPDMDEVINS pDevIns, int iInstance, PCFGMN
                                   "DmiBoardAssetTag|"
                                   "DmiBoardBoardType|"
                                   "DmiBoardLocInChass|"
+                                  "DmiBoardLocInChassis|"
                                   "DmiBoardProduct|"
                                   "DmiBoardSerial|"
                                   "DmiBoardVendor|"
@@ -1556,6 +1557,8 @@ static DECLCALLBACK(int)  efiConstruct(PPDMDEVINS pDevIns, int iInstance, PCFGMN
                                   "DmiChassisVendor|"
                                   "DmiChassisVersion|"
                                   "DmiProcManufacturer|"
+                                  "DmiProcFamily|"
+                                  "DmiProcSocket|"
                                   "DmiProcVersion|"
                                   "DmiOEMVBoxVer|"
                                   "DmiOEMVBoxRev|"
@@ -1922,4 +1925,3 @@ const PDMDEVREG g_DeviceEFI =
 #endif
     /* .u32VersionEnd = */          PDM_DEVREG_VERSION
 };
-

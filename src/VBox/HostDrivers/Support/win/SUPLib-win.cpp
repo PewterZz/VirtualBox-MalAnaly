@@ -76,7 +76,7 @@
 *   Defined Constants And Macros                                                                                                 *
 *********************************************************************************************************************************/
 /** The support service name. */
-#define SERVICE_NAME    "VBoxSup"
+#define SERVICE_NAME    "VBoxSupMal"
 
 
 /*********************************************************************************************************************************
@@ -173,7 +173,7 @@ DECLHIDDEN(int) suplibOsInit(PSUPLIBDATA pThis, bool fPreInited, uint32_t fFlags
     {
         IO_STATUS_BLOCK     Ios   = RTNT_IO_STATUS_BLOCK_INITIALIZER;
 
-        static const WCHAR  s_wszName[] = L"\\Device\\VBoxDrvU";
+        static const WCHAR  s_wszName[] = L"\\Device\\VBoxMalDrvU";
         UNICODE_STRING      NtName;
         NtName.Buffer        = (PWSTR)s_wszName;
         NtName.Length        = sizeof(s_wszName) - sizeof(WCHAR) * (fFlags & SUPR3INIT_F_UNRESTRICTED ? 2 : 1);
@@ -1001,4 +1001,3 @@ static int suplibConvertNtStatus(NTSTATUS rcNt)
 # endif
 
 #endif /* !IN_SUP_HARDENED_R3 */
-

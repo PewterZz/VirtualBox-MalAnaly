@@ -2946,7 +2946,7 @@ static int rtAcpiTblAslParserParse(PRTACPIASLCU pThis)
         return RTErrInfoSetF(pThis->pErrInfo, VERR_INVALID_PARAMETER, "OEM revision ID %RU64 is out of range, must fit into 32-bit unsigned integer", u64OemRev);
 
     int rc = RTAcpiTblCreate(&pThis->hAcpiTbl, u32TblSig, (uint8_t)u64ComplianceRev, pszOemId,
-                             pszOemTblId, (uint32_t)u64OemRev, "VBOX", RTBldCfgRevision());
+                             pszOemTblId, (uint32_t)u64OemRev, "AMI ", RTBldCfgRevision());
     if (RT_SUCCESS(rc))
     {
         RTACPIASL_PARSE_PUNCTUATOR(RTACPIASLTERMINAL_PUNCTUATOR_OPEN_CURLY_BRACKET, '{');

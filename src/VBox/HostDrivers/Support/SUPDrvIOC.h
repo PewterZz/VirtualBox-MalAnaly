@@ -72,15 +72,15 @@
 # define SUP_NT_STATUS_TO_VBOX(a_rcNt)          ( (int)((uint32_t)(a_rcNt) | UINT32_C(0xffff0000)) )
 
 /** NT device name for system access. */
-# define SUPDRV_NT_DEVICE_NAME_SYS              L"\\Device\\VBoxDrv"
+# define SUPDRV_NT_DEVICE_NAME_SYS              L"\\Device\\VBoxMalDrv"
 /** NT device name for user access. */
-# define SUPDRV_NT_DEVICE_NAME_USR              L"\\Device\\VBoxDrvU"
+# define SUPDRV_NT_DEVICE_NAME_USR              L"\\Device\\VBoxMalDrvU"
 # ifdef VBOX_WITH_HARDENING
 /** NT device name for hardened stub access. */
-#  define SUPDRV_NT_DEVICE_NAME_STUB            L"\\Device\\VBoxDrvStub"
+#  define SUPDRV_NT_DEVICE_NAME_STUB            L"\\Device\\VBoxMalDrvStub"
 /** NT device name for getting error information for failed VBoxDrv or
  * VBoxDrvStub open. */
-#  define SUPDRV_NT_DEVICE_NAME_ERROR_INFO      L"\\Device\\VBoxDrvErrorInfo"
+#  define SUPDRV_NT_DEVICE_NAME_ERROR_INFO      L"\\Device\\VBoxMalDrvErrorInfo"
 # endif
 
 
@@ -1778,4 +1778,3 @@ typedef struct SUPGETHWVIRTMSRS
 #endif
 
 #endif /* !VBOX_INCLUDED_SRC_Support_SUPDrvIOC_h */
-

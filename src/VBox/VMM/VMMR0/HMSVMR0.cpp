@@ -33,6 +33,7 @@
 #define VMCPU_INCL_CPUM_GST_CTX
 #include <iprt/asm-amd64-x86.h>
 #include <iprt/thread.h>
+#include <iprt/time.h>
 
 #include <VBox/vmm/pdmapi.h>
 #include <VBox/vmm/dbgf.h>
@@ -233,6 +234,7 @@
 #define HMSVM_MANDATORY_GUEST_CTRL_INTERCEPTS           (  SVM_CTRL_INTERCEPT_INTR          \
                                                          | SVM_CTRL_INTERCEPT_NMI           \
                                                          | SVM_CTRL_INTERCEPT_INIT          \
+                                                         | SVM_CTRL_INTERCEPT_CPUID         \
                                                          | SVM_CTRL_INTERCEPT_RDPMC         \
                                                          | SVM_CTRL_INTERCEPT_RSM           \
                                                          | SVM_CTRL_INTERCEPT_HLT           \
@@ -4203,6 +4205,22 @@ static void hmR0SvmPreRunGuestCommitted(PVMCPUCC pVCpu, PSVMTRANSIENT pSvmTransi
     PVMCC      pVM = pVCpu->CTX_SUFF(pVM);
     PSVMVMCB pVmcb = pSvmTransient->pVmcb;
 
+    /*
+     * Keep CPUID intercepted during boot, then allow direct execution later.
+     * Windows setup/boot is sensitive to unfiltered CPUID, while timing probes
+     * primarily care whether CPUID causes a VM-exit after the desktop is up.
+     */
+    static uint64_t s_u64FirstVmRunMs = 0;
+    uint64_t const u64NowMs = RTTimeMilliTS();
+    if (!s_u64FirstVmRunMs)
+        s_u64FirstVmRunMs = u64NowMs;
+    if (   u64NowMs - s_u64FirstVmRunMs >= RT_MS_5MIN
+        && (pVmcb->ctrl.u64InterceptCtrl & SVM_CTRL_INTERCEPT_CPUID))
+    {
+        pVmcb->ctrl.u64InterceptCtrl &= ~SVM_CTRL_INTERCEPT_CPUID;
+        pVmcb->ctrl.u32VmcbCleanBits &= ~HMSVM_VMCB_CLEAN_INTERCEPTS;
+    }
+
     hmR0SvmInjectPendingEvent(pVCpu, pVmcb);
 
     if (!CPUMIsGuestFPUStateActive(pVCpu))
@@ -6891,6 +6909,34 @@ HMSVM_EXIT_DECL hmR0SvmExitCpuid(PVMCPUCC pVCpu, PSVMTRANSIENT pSvmTransient)
     HMSVM_VALIDATE_EXIT_HANDLER_PARAMS(pVCpu, pSvmTransient);
 
     HMSVM_CPUMCTX_IMPORT_STATE(pVCpu, IEM_CPUMCTX_EXTRN_EXEC_DECODED_NO_MEM_MASK | CPUMCTX_EXTRN_RAX | CPUMCTX_EXTRN_RCX);
+
+    /*
+     * Fast-path the common CPUID(0,0) query.  Malware-analysis timing probes
+     * often compare this leaf against non-exiting serializing instructions, so
+     * avoid the generic IEM/history path when the instruction length is already
+     * available from NRIP.
+     */
+    if (   pVCpu->cpum.GstCtx.eax == 0
+        && pVCpu->cpum.GstCtx.ecx == 0
+        && hmR0SvmSupportsNextRipSave(pVCpu))
+    {
+        PCSVMVMCB     pVmcb   = hmR0SvmGetCurrentVmcb(pVCpu);
+        uint8_t const cbInstr = pVmcb->ctrl.u64NextRIP - pVCpu->cpum.GstCtx.rip;
+        if (cbInstr == 2)
+        {
+            CPUMGetGuestCpuId(pVCpu, 0, 0, -1 /*f64BitMode*/,
+                              &pVCpu->cpum.GstCtx.eax, &pVCpu->cpum.GstCtx.ebx,
+                              &pVCpu->cpum.GstCtx.ecx, &pVCpu->cpum.GstCtx.edx);
+            pVCpu->cpum.GstCtx.rax &= UINT32_C(0xffffffff);
+            pVCpu->cpum.GstCtx.rbx &= UINT32_C(0xffffffff);
+            pVCpu->cpum.GstCtx.rcx &= UINT32_C(0xffffffff);
+            pVCpu->cpum.GstCtx.rdx &= UINT32_C(0xffffffff);
+            pVCpu->cpum.GstCtx.fExtrn &= ~(CPUMCTX_EXTRN_RAX | CPUMCTX_EXTRN_RBX | CPUMCTX_EXTRN_RCX | CPUMCTX_EXTRN_RDX);
+            hmR0SvmAdvanceRip(pVCpu, cbInstr);
+            return VINF_SUCCESS;
+        }
+    }
+
     VBOXSTRICTRC rcStrict;
     PCEMEXITREC pExitRec = EMHistoryUpdateFlagsAndTypeAndPC(pVCpu,
                                                             EMEXIT_MAKE_FT(EMEXIT_F_KIND_EM | EMEXIT_F_HM, EMEXITTYPE_X86_CPUID),

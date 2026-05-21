@@ -4831,10 +4831,23 @@ static DECLCALLBACK(int) vmmdevConstruct(PPDMDEVINS pDevIns, int iInstance, PCFG
     PPDMPCIDEV pPciDev = pDevIns->apPciDevs[0];
     PDMPCIDEV_ASSERT_VALID(pDevIns, pPciDev);
 
-    /* PCI vendor, just a free bogus value */
-    PDMPciDevSetVendorId(pPciDev,     0x80ee);
-    /* device ID */
-    PDMPciDevSetDeviceId(pPciDev,     0xcafe);
+    uint32_t u32VenDevId = UINT32_C(0);
+    rc = pHlp->pfnCFGMQueryU32Def(pCfg, "VenDevId", &u32VenDevId, UINT32_C(0));
+    if (RT_FAILURE(rc))
+        return PDMDEV_SET_ERROR(pDevIns, rc, N_("VMMDev: Invalid VenDevId value"));
+
+    if (u32VenDevId)
+    {
+        PDMPciDevSetVendorId(pPciDev,     u32VenDevId >> 16);
+        PDMPciDevSetDeviceId(pPciDev,     u32VenDevId & UINT32_C(0xffff));
+    }
+    else
+    {
+        /* PCI vendor, just a free bogus value */
+        PDMPciDevSetVendorId(pPciDev,     0x80ee);
+        /* device ID */
+        PDMPciDevSetDeviceId(pPciDev,     0xcafe);
+    }
     /* class sub code (other type of system peripheral) */
     PDMPciDevSetClassSub(pPciDev,       0x80);
     /* class base code (base system peripheral) */
@@ -4916,6 +4929,7 @@ static DECLCALLBACK(int) vmmdevConstruct(PPDMDEVINS pDevIns, int iInstance, PCFG
                                   "GetHostTimeDisabled|"
                                   "BackdoorLogDisabled|"
                                   "KeepCredentials|"
+                                  "VenDevId|"
                                   "HeapEnabled|"
                                   "GuestCoreDumpEnabled|"
                                   "GuestCoreDumpDir|"

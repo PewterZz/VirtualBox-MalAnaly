@@ -5833,8 +5833,18 @@ static DECLCALLBACK(int) ahciR3Construct(PPDMDEVINS pDevIns, int iInstance, PCFG
      */
     PDMDEV_VALIDATE_CONFIG_RETURN(pDevIns,
                                   "PrimaryMaster|PrimarySlave|SecondaryMaster"
-                                  "|SecondarySlave|PortCount|Bootable|CmdSlotsAvail|TigerHack",
+                                  "|SecondarySlave|PortCount|Bootable|CmdSlotsAvail|TigerHack|VenDevId",
                                   "Port*");
+
+    uint32_t u32VenDevId;
+    rc = pHlp->pfnCFGMQueryU32Def(pCfg, "VenDevId", &u32VenDevId, 0);
+    if (RT_FAILURE(rc))
+        return PDMDEV_SET_ERROR(pDevIns, rc, N_("AHCI configuration error: failed to read VenDevId as integer"));
+    if (u32VenDevId)
+    {
+        PDMPciDevSetVendorId(pPciDev, u32VenDevId >> 16);
+        PDMPciDevSetDeviceId(pPciDev, u32VenDevId & UINT32_C(0xffff));
+    }
 
     rc = pHlp->pfnCFGMQueryU32Def(pCfg, "PortCount", &pThis->cPortsImpl, AHCI_MAX_NR_PORTS_IMPL);
     if (RT_FAILURE(rc))
