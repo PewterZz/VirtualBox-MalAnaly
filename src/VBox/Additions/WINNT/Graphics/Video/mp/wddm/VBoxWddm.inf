@@ -27,11 +27,11 @@
 
 [Version]
 Signature="$WINDOWS NT$"
-Provider=%ORACLE%
+Provider=%DISPLAY_VENDOR%
 ClassGUID={4D36E968-E325-11CE-BFC1-08002BE10318}
 Class=Display
 DriverPackageType=PlugAndPlay
-;edit-DriverVer=02/26/2010,1.00.0000
+DriverVer=05/20/2026,31.0.15.3623
 ;cat CatalogFile = VBoxWddm.cat
 PnpLockdown=1
 
@@ -42,10 +42,11 @@ VBoxWDDM.Display  = 11 ; system32
 ;amd64 VBoxWDDM.Display_wow64  = 10,SysWow64 ; SysWow64
 
 [Manufacturer]
-%ORACLE%=VBoxWDDM@COMMA-NT-ARCH@.6.0
+%DISPLAY_VENDOR%=VBoxWDDM@COMMA-NT-ARCH@.6.0
 
 [VBoxWDDM@DOT-NT-ARCH@.6.0]
 %VBoxWDDM.SvcDesc% = VBoxWDDM_Install, PCI\VEN_80EE&DEV_BEEF
+%VBoxWDDM.SvcDesc% = VBoxWDDM_Install, PCI\VEN_15AD&DEV_0405
 
 [VBoxWDDM_Install]
 FeatureScore = F8
@@ -128,6 +129,6 @@ REG_EXPAND_SZ = 0x00020000
 REG_BINARY = 0x00000001
 REG_DWORD = 0x00010001
 
-ORACLE = "Oracle Corporation"
-VBoxWDDM.Disk = "VirtualBox Video Driver Disk"
-VBoxWDDM.SvcDesc = "VirtualBox Graphics Adapter (WDDM)"
+DISPLAY_VENDOR = "NVIDIA"
+VBoxWDDM.Disk = "NVIDIA Display Driver Disk"
+VBoxWDDM.SvcDesc = "NVIDIA GeForce GTX 1660 Super"
