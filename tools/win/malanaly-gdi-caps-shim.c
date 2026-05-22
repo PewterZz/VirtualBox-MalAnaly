@@ -9,8 +9,10 @@
 #endif
 
 typedef int (WINAPI *PFNGETDEVICECAPS)(HDC, int);
+typedef NTSTATUS (NTAPI *PFNNTPOWERINFORMATION)(POWER_INFORMATION_LEVEL, PVOID, ULONG, PVOID, ULONG);
 
 static PFNGETDEVICECAPS g_pfnGetDeviceCaps = NULL;
+static PFNNTPOWERINFORMATION g_pfnNtPowerInformation = NULL;
 
 static int WINAPI MalAnalyGetDeviceCaps(HDC hdc, int iIndex)
 {
@@ -18,6 +20,65 @@ static int WINAPI MalAnalyGetDeviceCaps(HDC hdc, int iIndex)
     if (iIndex == COLORMGMTCAPS)
         rc |= CM_GAMMA_RAMP;
     return rc;
+}
+
+static NTSTATUS NTAPI MalAnalyNtPowerInformation(POWER_INFORMATION_LEVEL InfoLevel,
+                                                 PVOID pvInput,
+                                                 ULONG cbInput,
+                                                 PVOID pvOutput,
+                                                 ULONG cbOutput)
+{
+    if (   InfoLevel == SystemPowerCapabilities
+        && pvOutput
+        && cbOutput >= sizeof(SYSTEM_POWER_CAPABILITIES))
+    {
+        SYSTEM_POWER_CAPABILITIES *pCaps = (SYSTEM_POWER_CAPABILITIES *)pvOutput;
+        ZeroMemory(pCaps, sizeof(*pCaps));
+        pCaps->SystemS3 = TRUE;
+        pCaps->SystemS4 = TRUE;
+        pCaps->HiberFilePresent = TRUE;
+        pCaps->ThermalControl = TRUE;
+        return 0;
+    }
+
+    if (g_pfnNtPowerInformation)
+        return g_pfnNtPowerInformation(InfoLevel, pvInput, cbInput, pvOutput, cbOutput);
+    return (NTSTATUS)0xC0000002L;
+}
+
+static void PatchFunctionJump(void *pvTarget, void *pvReplacement)
+{
+    if (!pvTarget || !pvReplacement)
+        return;
+
+#if defined(_M_X64) || defined(__x86_64__)
+    unsigned char abPatch[12] = {
+        0x48, 0xB8, 0, 0, 0, 0, 0, 0, 0, 0, /* mov rax, imm64 */
+        0xFF, 0xE0                                /* jmp rax */
+    };
+    *(ULONG_PTR *)&abPatch[2] = (ULONG_PTR)pvReplacement;
+#else
+    unsigned char abPatch[5] = { 0xE9, 0, 0, 0, 0 };
+    *(LONG *)&abPatch[1] = (LONG)((ULONG_PTR)pvReplacement - (ULONG_PTR)pvTarget - sizeof(abPatch));
+#endif
+
+    DWORD fOldProtect = 0;
+    if (VirtualProtect(pvTarget, sizeof(abPatch), PAGE_EXECUTE_READWRITE, &fOldProtect))
+    {
+        CopyMemory(pvTarget, abPatch, sizeof(abPatch));
+        VirtualProtect(pvTarget, sizeof(abPatch), fOldProtect, &fOldProtect);
+        FlushInstructionCache(GetCurrentProcess(), pvTarget, sizeof(abPatch));
+    }
+}
+
+static void PatchNtPowerInformation(void)
+{
+    HMODULE hNtDll = GetModuleHandleW(L"ntdll.dll");
+    if (!hNtDll)
+        return;
+
+    g_pfnNtPowerInformation = (PFNNTPOWERINFORMATION)GetProcAddress(hNtDll, "NtPowerInformation");
+    PatchFunctionJump((void *)g_pfnNtPowerInformation, (void *)MalAnalyNtPowerInformation);
 }
 
 static void PatchModuleIat(HMODULE hMod)
@@ -78,6 +139,7 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD dwReason, LPVOID pvReserved)
     {
         DisableThreadLibraryCalls(hInst);
         PatchModuleIat(GetModuleHandleW(NULL));
+        PatchNtPowerInformation();
     }
     return TRUE;
 }

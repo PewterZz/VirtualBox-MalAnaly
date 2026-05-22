@@ -13,10 +13,10 @@ Implemented source changes include:
 - The support driver/device names are renamed to avoid colliding with Antidetect/Cloakbox's installed support driver.
 - Default storage identities changed to commodity-looking SATA/NVMe/optical devices.
 - WDDM gamma-ramp capability reporting patched in source so `GetDeviceCaps(..., COLORMGMTCAPS)` can advertise `CM_GAMMA_RAMP` once the Windows Guest Additions display driver is built.
-- A small optional Windows user-mode shim is included at `tools/win/malanaly-gdi-caps-shim.c`. It can be loaded with AppInit_DLLs in analysis guests to make imported `GetDeviceCaps(COLORMGMTCAPS)` calls report `CM_GAMMA_RAMP`, avoiding the VMAware GPU-capabilities check without installing Guest Additions display drivers.
+- A small optional Windows user-mode shim is included at `tools/win/malanaly-gdi-caps-shim.c`. It can be loaded with AppInit_DLLs in analysis guests to make imported `GetDeviceCaps(COLORMGMTCAPS)` calls report `CM_GAMMA_RAMP` and make `NtPowerInformation(SystemPowerCapabilities)` report S3/S4/hibernate/thermal support, avoiding the VMAware GPU- and power-capabilities checks without installing Guest Additions display drivers.
 
 Build note:
 
 The host binaries `VBoxSup.sys`, `VMMR0.r0`, `VBoxDDR0.r0`, `VBoxDD.dll`, `VBoxSVC.exe`, `VBoxManage.exe`, and `VBoxHeadless.exe` were built locally. The Windows WDDM additions driver can be built with the Windows 10 22621 WDK headers and a mixed kernel library directory using the WDK 22621 `ntoskrnl.lib`, `hal.lib`, and `displib.lib`, plus WDK 7.1 `BufferOverflowK.lib`.
 
-Current VMAware result on the `peter` test VM has GPU capabilities not detected when the GDI-capabilities shim is active.
+Current VMAware result on the `peter` test VM is `0/91` when the timing delay window has elapsed and the capabilities shim is active.
