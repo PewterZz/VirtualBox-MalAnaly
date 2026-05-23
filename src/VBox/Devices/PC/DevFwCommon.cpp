@@ -968,9 +968,9 @@ int FwCommonPlantDMITable(PPDMDEVINS pDevIns, uint8_t *pTable, unsigned cbMax, P
         pMemDev->u16TypeDetail           = 0;    /* Nothing special */
         pMemDev->u16Speed                = 1600; /* Unknown, shall be speed in MHz */
         DMI_READ_CFG_STR(pMemDev->u8Manufacturer, DmiSystemVendor);
-        DMI_READ_CFG_STR_DEF(pMemDev->u8SerialNumber, " ", "00000000");
-        DMI_READ_CFG_STR_DEF(pMemDev->u8AssetTag, " ", "00000000");
-        DMI_READ_CFG_STR_DEF(pMemDev->u8PartNumber, " ", "00000000");
+        DMI_READ_CFG_STR_DEF(pMemDev->u8SerialNumber, " ", "M323R2GA3BB0-CQK");
+        DMI_READ_CFG_STR_DEF(pMemDev->u8AssetTag, " ", "BANK0-A1");
+        DMI_READ_CFG_STR_DEF(pMemDev->u8PartNumber, " ", "M323R2GA3BB0-CQK");
         pMemDev->u8Attributes            = 0; /* Unknown */
         DMI_TERM_STRUCT;
 
