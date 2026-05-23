@@ -247,6 +247,23 @@ typedef struct DMIPROCESSORINF
 } *PDMIPROCESSORINF;
 AssertCompileSize(DMIPROCESSORINF, 0x2a);
 
+/** DMI Cache Information (Type 7) */
+typedef struct DMICACHEINF
+{
+    DMIHDR          header;
+    uint8_t         u8SocketDesignation;
+    uint16_t        u16CacheConfiguration;
+    uint16_t        u16MaximumCacheSize;
+    uint16_t        u16InstalledSize;
+    uint16_t        u16SupportedSRAMType;
+    uint16_t        u16CurrentSRAMType;
+    uint8_t         u8CacheSpeed;
+    uint8_t         u8ErrorCorrectionType;
+    uint8_t         u8SystemCacheType;
+    uint8_t         u8Associativity;
+} *PDMICACHEINF;
+AssertCompileSize(DMICACHEINF, 0x13);
+
 /** DMI OEM strings (Type 11) */
 typedef struct DMIOEMSTRINGS
 {
@@ -872,9 +889,9 @@ int FwCommonPlantDMITable(PPDMDEVINS pDevIns, uint8_t *pTable, unsigned cbMax, P
                                            | RT_BIT(0)  /* CPU enabled */
                                            ;
         pProcessorInf->u8ProcessorUpgrade  = 0x04;   /* ZIF Socket */
-        pProcessorInf->u16L1CacheHandle    = 0xFFFF; /* not specified */
-        pProcessorInf->u16L2CacheHandle    = 0xFFFF; /* not specified */
-        pProcessorInf->u16L3CacheHandle    = 0xFFFF; /* not specified */
+        pProcessorInf->u16L1CacheHandle    = 0x0008;
+        pProcessorInf->u16L2CacheHandle    = 0x0009;
+        pProcessorInf->u16L3CacheHandle    = 0x000a;
         pProcessorInf->u8SerialNumber      = 0;      /* not specified */
         pProcessorInf->u8AssetTag          = 0;      /* not specified */
         pProcessorInf->u8PartNumber        = 0;      /* not specified */
@@ -885,6 +902,47 @@ int FwCommonPlantDMITable(PPDMDEVINS pDevIns, uint8_t *pTable, unsigned cbMax, P
                                            = RT_BIT(2); /* 64-bit capable */
         pProcessorInf->u16ProcessorFamily2 = 0;
         DMI_TERM_STRUCT;
+
+        /**********************************
+         * DMI Cache Information (Type 7) *
+         **********************************/
+        struct
+        {
+            const char *pszSocket;
+            uint16_t    u16Handle;
+            uint16_t    u16Configuration;
+            uint16_t    u16SizeKb;
+            uint8_t     u8CacheType;
+            uint8_t     u8Associativity;
+        } const aCaches[] =
+        {
+            { "L1 Cache", 0x0008, 0x0180,   512, 0x05, 0x09 },
+            { "L2 Cache", 0x0009, 0x0181,  4096, 0x05, 0x0a },
+            { "L3 Cache", 0x000a, 0x0182, 16384, 0x05, 0x0b },
+        };
+        for (unsigned iCache = 0; iCache < RT_ELEMENTS(aCaches); iCache++)
+        {
+            PDMICACHEINF pCacheInf = (PDMICACHEINF)pszStr;
+            DMI_CHECK_SIZE(sizeof(*pCacheInf));
+            DMI_START_STRUCT(pCacheInf);
+            pCacheInf->header.u8Type            = 7; /* Cache Information */
+            pCacheInf->header.u8Length          = sizeof(*pCacheInf);
+            pCacheInf->header.u16Handle         = aCaches[iCache].u16Handle;
+            pCacheInf->u8SocketDesignation      = iStrNr++;
+            size_t const cbCacheSocket = strlen(aCaches[iCache].pszSocket) + 1;
+            DMI_CHECK_SIZE(cbCacheSocket);
+            pszStr = (char *)mempcpy(pszStr, aCaches[iCache].pszSocket, cbCacheSocket);
+            pCacheInf->u16CacheConfiguration    = aCaches[iCache].u16Configuration;
+            pCacheInf->u16MaximumCacheSize      = aCaches[iCache].u16SizeKb;
+            pCacheInf->u16InstalledSize         = aCaches[iCache].u16SizeKb;
+            pCacheInf->u16SupportedSRAMType     = RT_BIT(1); /* Unknown */
+            pCacheInf->u16CurrentSRAMType       = RT_BIT(1); /* Unknown */
+            pCacheInf->u8CacheSpeed             = 0;         /* Unknown */
+            pCacheInf->u8ErrorCorrectionType    = 0x06;      /* Multi-bit ECC */
+            pCacheInf->u8SystemCacheType        = aCaches[iCache].u8CacheType;
+            pCacheInf->u8Associativity          = aCaches[iCache].u8Associativity;
+            DMI_TERM_STRUCT;
+        }
 
         /***************************************
          * DMI Physical Memory Array (Type 16) *
@@ -1019,8 +1077,8 @@ int FwCommonPlantDMITable(PPDMDEVINS pDevIns, uint8_t *pTable, unsigned cbMax, P
         pEndOfTable->u16Handle       = 0xFEFF;
         *pcbDmiTables = ((uintptr_t)pszStr - (uintptr_t)pTable) + 2;
 
-        /* We currently plant 10 DMI tables. Update this if tables number changed. */
-        *pcDmiTables = 10;
+        /* We currently plant 13 DMI tables. Update this if tables number changed. */
+        *pcDmiTables = 13;
 
         /* If more fields are added here, fix the size check in DMI_READ_CFG_STR */
 
