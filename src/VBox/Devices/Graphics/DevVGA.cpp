@@ -6603,15 +6603,15 @@ static DECLCALLBACK(int)   vgaR3Construct(PPDMDEVINS pDevIns, int iInstance, PCF
         if (pThis->fVMSVGAPciId)
         {
             PDMPciDevSetVendorId(pPciDev,       0x1002);
-            PDMPciDevSetDeviceId(pPciDev,       0x67df);
+            PDMPciDevSetDeviceId(pPciDev,       0x1638);
         }
         else
         {
             PDMPciDevSetVendorId(pPciDev,       0x80ee);   /* PCI vendor, just a free bogus value */
             PDMPciDevSetDeviceId(pPciDev,       0xbeef);
         }
-        PDMPciDevSetSubSystemVendorId(pPciDev,  0x1043);
-        PDMPciDevSetSubSystemId(pPciDev,        0x04a0);
+        PDMPciDevSetSubSystemVendorId(pPciDev,  0x1025);
+        PDMPciDevSetSubSystemId(pPciDev,        0x151e);
     }
     else
 # endif /* VBOX_WITH_VMSVGA */

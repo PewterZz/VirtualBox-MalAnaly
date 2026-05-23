@@ -8016,9 +8016,9 @@ static DECLCALLBACK(int) xhciR3Construct(PPDMDEVINS pDevIns, int iInstance, PCFG
         pThis->erst_addr_mask = XHCI_ERST_ADDR_MASK;
         PCIDevSetVendorId(pPciDev,      0x1022);
         if (fChipLynxPoint)
-            PCIDevSetDeviceId(pPciDev,  0x43EE);
+            PCIDevSetDeviceId(pPciDev,  0x1639);
         else
-            PCIDevSetDeviceId(pPciDev,  0x43EE);
+            PCIDevSetDeviceId(pPciDev,  0x1639);
     }
 
     PCIDevSetClassProg(pPciDev,         0x30);   /* xHCI */

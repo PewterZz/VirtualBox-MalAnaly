@@ -1491,7 +1491,7 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "ALASKA", "A M I   ", 2)
                     "1",        // Model number
                     "0",        // Serial number
                     "Li-Ion",    // Battery type
-                    "ASUSTeK"   // OEM Information
+                    "Acer"      // OEM Information
                 })
 
                 Name (PBST, Package () {

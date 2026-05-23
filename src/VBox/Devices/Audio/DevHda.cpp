@@ -78,7 +78,7 @@
 #elif defined(VBOX_WITH_INTEL_HDA)
 /* AMD HDA controller */
 # define HDA_PCI_VENDOR_ID 0x1022
-# define HDA_PCI_DEVICE_ID 0x1457
+# define HDA_PCI_DEVICE_ID 0x15e3
 #elif defined(VBOX_WITH_NVIDIA_HDA)
 /* nVidia HDA controller */
 # define HDA_PCI_VENDOR_ID 0x10de
@@ -4942,7 +4942,7 @@ static DECLCALLBACK(int) hdaR3Construct(PPDMDEVINS pDevIns, int iInstance, PCFGM
             break;
         case kDevice_IntelIch6: /* Our default intel device. */
             PDMPciDevSetVendorId(pPciDev, 0x1022);
-            PDMPciDevSetDeviceId(pPciDev, 0x1457);
+            PDMPciDevSetDeviceId(pPciDev, 0x15e3);
             break;
         case kDevice_IntelSunrisePoint: /* this is supported by more recent macOS version, at least 10.15 */
             PDMPciDevSetVendorId(pPciDev, 0x8086);
