@@ -1,10 +1,25 @@
 # Local build output
 /out/
+/run/
 /env.bat
 /configure.log
 
+# Local tool environments and generated binaries
+/.venv-tools/
+*.obj
+*.exp
+*.lib
+*.dll
+*.exe
+
+# VM/debug artifacts from local validation
+*.log
+*.png
+/tmp-vgabios-md5/
+
 # Local build configuration generated for this machine
 /AutoConfig.kmk
+*.before-gui
 
 # Editor and OS noise
 /.vs/

@@ -96,7 +96,7 @@ void set_int_vector(uint8_t int_vec, void __far *ptr)
 
 vgabios_name:
 #ifdef VBOX
-.ascii  "VirtualBox VGA BIOS"
+.ascii  "Generic VGA BIOS"
 #else
 .ascii  "Plex86/Bochs VGABios"
 #endif

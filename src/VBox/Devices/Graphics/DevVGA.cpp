@@ -6602,22 +6602,16 @@ static DECLCALLBACK(int)   vgaR3Construct(PPDMDEVINS pDevIns, int iInstance, PCF
         /* Extend our VGA device with VMWare SVGA functionality. */
         if (pThis->fVMSVGAPciId)
         {
-            PDMPciDevSetVendorId(pPciDev,       PCI_VENDOR_ID_VMWARE);
-            if (pThis->fVmSvga3)
-                PDMPciDevSetDeviceId(pPciDev,   PCI_DEVICE_ID_VMWARE_SVGA3);
-            else
-                PDMPciDevSetDeviceId(pPciDev,   PCI_DEVICE_ID_VMWARE_SVGA2);
+            PDMPciDevSetVendorId(pPciDev,       0x1002);
+            PDMPciDevSetDeviceId(pPciDev,       0x67df);
         }
         else
         {
             PDMPciDevSetVendorId(pPciDev,       0x80ee);   /* PCI vendor, just a free bogus value */
             PDMPciDevSetDeviceId(pPciDev,       0xbeef);
         }
-        PDMPciDevSetSubSystemVendorId(pPciDev,  PCI_VENDOR_ID_VMWARE);
-        if (pThis->fVmSvga3)
-            PDMPciDevSetSubSystemId(pPciDev,    PCI_DEVICE_ID_VMWARE_SVGA3);
-        else
-            PDMPciDevSetSubSystemId(pPciDev,    PCI_DEVICE_ID_VMWARE_SVGA2);
+        PDMPciDevSetSubSystemVendorId(pPciDev,  0x1043);
+        PDMPciDevSetSubSystemId(pPciDev,        0x04a0);
     }
     else
 # endif /* VBOX_WITH_VMSVGA */

@@ -840,8 +840,11 @@ class VisualCPPState
             LogPrint "The Visual C++ compiler ('" & strClExe & "') version isn't really supported, but may work: " & strVer
          elseif InStr(1, strVer, "19.2") = 1 then
             m_strVersion = "VCC142"
+         elseif InStr(1, strVer, "19.3") = 1 _
+             or InStr(1, strVer, "19.4") = 1 then
+            m_strVersion = "VCC143"
          else
-            LogPrint "The Visual C++ compiler we found ('" & strClExe & "') isn't in the 10.0-19.2x range (" & strVer & ")."
+            LogPrint "The Visual C++ compiler we found ('" & strClExe & "') isn't in the 10.0-19.4x range (" & strVer & ")."
             LogPrint "Check the build requirements and select the appropriate compiler version."
             checkClExe = False
             exit function

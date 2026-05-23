@@ -8439,7 +8439,7 @@ vesa_pm_end:                                 ; 0xc4754 LB 0x1
 section _DATA progbits vstart=0x4780 align=1 ; size=0x3742 class=DATA group=DGROUP
   ; disGetNextSymbol 0xc4780 LB 0x3742 -> off=0x0 cb=000000000000002b uValue=00000000000c0000 '_msg_vga_init'
 _msg_vga_init:                               ; 0xc4780 LB 0x2b
-    db  'Oracle VirtualBox Version 7.2.4 VGA BIOS', 00dh, 00ah, 000h
+    db  'AMI Aptio Version 1.A0 VGA BIOS         ', 00dh, 00ah, 000h
   ; disGetNextSymbol 0xc47ab LB 0x3717 -> off=0x0 cb=0000000000000080 uValue=00000000000c002b 'vga_modes'
 vga_modes:                                   ; 0xc47ab LB 0x80
     db  000h, 000h, 000h, 004h, 000h, 0b8h, 0ffh, 002h, 001h, 000h, 000h, 004h, 000h, 0b8h, 0ffh, 002h
@@ -9361,22 +9361,22 @@ row_tbl:                                     ; 0xc7dfa LB 0x4
     dd  02b190e00h
   ; disGetNextSymbol 0xc7dfe LB 0xc4 -> off=0x0 cb=0000000000000015 uValue=00000000000c367e '_vbebios_copyright'
 _vbebios_copyright:                          ; 0xc7dfe LB 0x15
-    db  'VirtualBox VESA BIOS', 000h
+    db  'Generic VESA BIOS   ', 000h
   ; disGetNextSymbol 0xc7e13 LB 0xaf -> off=0x0 cb=000000000000001d uValue=00000000000c3693 '_vbebios_vendor_name'
 _vbebios_vendor_name:                        ; 0xc7e13 LB 0x1d
-    db  'Oracle and/or its affiliates', 000h
+    db  'American Megatrends Intl LLC', 000h
   ; disGetNextSymbol 0xc7e30 LB 0x92 -> off=0x0 cb=000000000000001e uValue=00000000000c36b0 '_vbebios_product_name'
 _vbebios_product_name:                       ; 0xc7e30 LB 0x1e
-    db  'Oracle VirtualBox VBE Adapter', 000h
+    db  'AMD Radeon Graphics Adapter  ', 000h
   ; disGetNextSymbol 0xc7e4e LB 0x74 -> off=0x0 cb=0000000000000020 uValue=00000000000c36ce '_vbebios_product_revision'
 _vbebios_product_revision:                   ; 0xc7e4e LB 0x20
-    db  'Oracle VirtualBox Version 7.2.4', 000h
+    db  'AMI Aptio Version 1.A0         ', 000h
   ; disGetNextSymbol 0xc7e6e LB 0x54 -> off=0x0 cb=000000000000002b uValue=00000000000c36ee '_vbebios_info_string'
 _vbebios_info_string:                        ; 0xc7e6e LB 0x2b
-    db  'VirtualBox VBE Display Adapter enabled', 00dh, 00ah, 00dh, 00ah, 000h
+    db  'VBE Display Adapter enabled           ', 00dh, 00ah, 00dh, 00ah, 000h
   ; disGetNextSymbol 0xc7e99 LB 0x29 -> off=0x0 cb=0000000000000029 uValue=00000000000c3719 '_no_vbebios_info_string'
 _no_vbebios_info_string:                     ; 0xc7e99 LB 0x29
-    db  'No VirtualBox VBE support available!', 00dh, 00ah, 00dh, 00ah, 000h
+    db  'No VBE support available!           ', 00dh, 00ah, 00dh, 00ah, 000h
 
 section CONST progbits vstart=0x7ec2 align=1 ; size=0x0 class=DATA group=DGROUP
 

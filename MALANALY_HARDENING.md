@@ -13,7 +13,7 @@ Implemented source changes include:
 - The support driver/device names are renamed to avoid colliding with Antidetect/Cloakbox's installed support driver.
 - Default storage identities changed to commodity-looking SATA/NVMe/optical devices.
 - WDDM gamma-ramp capability reporting patched in source so `GetDeviceCaps(..., COLORMGMTCAPS)` can advertise `CM_GAMMA_RAMP` once the Windows Guest Additions display driver is built.
-- A small optional Windows user-mode shim is included at `tools/win/malanaly-gdi-caps-shim.c`. It can be loaded with AppInit_DLLs in analysis guests to make imported `GetDeviceCaps(COLORMGMTCAPS)` calls report `CM_GAMMA_RAMP` and make `NtPowerInformation(SystemPowerCapabilities)` report S3/S4/hibernate/thermal support, avoiding the VMAware GPU- and power-capabilities checks without installing Guest Additions display drivers.
+- A small optional Windows user-mode shim is included at `tools/win/malanaly-gdi-caps-shim.c`. It can be loaded with AppInit_DLLs in analysis guests to make imported `GetDeviceCaps(COLORMGMTCAPS)` calls report `CM_GAMMA_RAMP`, make `NtPowerInformation(SystemPowerCapabilities)` report S3/S4/hibernate/thermal support, and sanitize `RegGetValueW(..., "HardwareID", ...)` returns for VM-specific PCI/USB IDs, avoiding the VMAware GPU, power-capabilities, and PCI vendor/device checks without changing the real boot display device.
 
 Build note:
 

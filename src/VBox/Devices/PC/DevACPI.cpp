@@ -742,6 +742,7 @@ struct ACPITBLFADT
 #define FADT_FL_REMOVE_POWER_ON_CAPABLE RT_BIT(17) /**< 1=platform can remote power on */
 #define FADT_FL_FORCE_APIC_CLUSTER_MODEL  RT_BIT(18)
 #define FADT_FL_FORCE_APIC_PHYS_DEST_MODE RT_BIT(19)
+#define FADT_FL_LOW_POWER_S0_IDLE_CAPABLE RT_BIT(21)
 
 /* PM Timer mask and msb */
 #ifndef PM_TMR_32BIT
@@ -3006,7 +3007,7 @@ static void acpiR3SetupFadt(PPDMDEVINS pDevIns, PACPISTATE pThis, RTGCPHYS32 GCP
 
     /* First the ACPI version 2+ version of the structure. */
     memset(&fadt, 0, sizeof(fadt));
-    acpiR3PrepareHeader(pThis, &fadt.header, "FACP", sizeof(fadt), 4);
+    acpiR3PrepareHeader(pThis, &fadt.header, "FACP", sizeof(fadt), 5);
     fadt.u32FACS              = RT_H2LE_U32(GCPhysFacs);
     fadt.u32DSDT              = RT_H2LE_U32(GCPhysDsdt);
     fadt.u8IntModel           = 0;  /* dropped from the ACPI 2.0 spec. */
@@ -3045,9 +3046,12 @@ static void acpiR3SetupFadt(PPDMDEVINS pDevIns, PACPISTATE pThis, RTGCPHYS32 GCP
     fadt.u16IAPCBOOTARCH      = RT_H2LE_U16(IAPC_BOOT_ARCH_LEGACY_DEV | IAPC_BOOT_ARCH_8042);
     /** @note WBINVD is required for ACPI versions newer than 1.0 */
     fadt.u32Flags             = RT_H2LE_U32(  FADT_FL_WBINVD
+                                            | FADT_FL_RTC_S4
                                             | FADT_FL_FIX_RTC
                                             | FADT_FL_TMR_VAL_EXT
-                                            | FADT_FL_RESET_REG_SUP);
+                                            | FADT_FL_RESET_REG_SUP
+                                            | FADT_FL_S4_RTC_STS_VALID
+                                            | FADT_FL_LOW_POWER_S0_IDLE_CAPABLE);
 
     /* We have to force physical APIC mode or Linux can't use more than 8 CPUs */
     if (pThis->fCpuHotPlug)
@@ -4477,7 +4481,7 @@ static DECLCALLBACK(int) acpiR3Construct(PPDMDEVINS pDevIns, int iInstance, PCFG
         return PDMDEV_SET_ERROR(pDevIns, rc, N_("Configuration error: Failed to read \"PowerS1Enabled\""));
 
     /* query whether S4 power state should be exposed */
-    rc = pHlp->pfnCFGMQueryBoolDef(pCfg, "PowerS4Enabled", &pThis->fS4Enabled, false);
+    rc = pHlp->pfnCFGMQueryBoolDef(pCfg, "PowerS4Enabled", &pThis->fS4Enabled, true);
     if (RT_FAILURE(rc))
         return PDMDEV_SET_ERROR(pDevIns, rc, N_("Configuration error: Failed to read \"PowerS4Enabled\""));
 
