@@ -1474,7 +1474,7 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "ALASKA", "A M I   ", 2)
 
                 Method (_STA, 0, NotSerialized)
                 {
-                    return (BSTA)
+                    return (0x00)
                 }
 
                 Name (PBIF, Package ()

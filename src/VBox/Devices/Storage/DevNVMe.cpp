@@ -7295,8 +7295,8 @@ static DECLCALLBACK(int) nvmeR3Construct(PPDMDEVINS pDevIns, int iInstance, PCFG
     PPDMPCIDEV pPciDev = pDevIns->apPciDevs[0];
     PDMPCIDEV_ASSERT_VALID(pDevIns, pPciDev);
 
-    PDMPciDevSetVendorId(pPciDev,       NVME_PCI_VENDOR_ID); /* Oracle Corporation */
-    PDMPciDevSetDeviceId(pPciDev,       0x4e56); /* "NV" */
+    PDMPciDevSetVendorId(pPciDev,       NVME_PCI_VENDOR_ID); /* Samsung Electronics */
+    PDMPciDevSetDeviceId(pPciDev,       0x4e56); /* NVMe controller */
     PDMPciDevSetCommand(pPciDev,        0x0000);
 #ifdef VBOX_WITH_MSI_DEVICES
     PDMPciDevSetStatus(pPciDev,         VBOX_PCI_STATUS_CAP_LIST);
