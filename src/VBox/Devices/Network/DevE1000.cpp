@@ -8936,6 +8936,8 @@ static DECLCALLBACK(int) e1kR3Construct(PPDMDEVINS pDevIns, int iInstance, PCFGM
     if (RT_FAILURE(rc))
         return PDMDEV_SET_ERROR(pDevIns, rc,
                                 N_("Configuration error: Failed to get the value of 'AdapterType'"));
+    if (pThis->eChip == E1K_CHIP_82540EM)
+        pThis->eChip = E1K_CHIP_82583V;
     Assert(pThis->eChip <= E1K_CHIP_82583V);
 
     rc = pHlp->pfnCFGMQueryBoolDef(pCfg, "EthernetCRC", &pThis->fEthernetCRC, true);

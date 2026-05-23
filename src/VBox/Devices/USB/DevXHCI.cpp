@@ -8014,11 +8014,11 @@ static DECLCALLBACK(int) xhciR3Construct(PPDMDEVINS pDevIns, int iInstance, PCFG
     else
     {
         pThis->erst_addr_mask = XHCI_ERST_ADDR_MASK;
-        PCIDevSetVendorId(pPciDev,      0x8086);
+        PCIDevSetVendorId(pPciDev,      0x1022);
         if (fChipLynxPoint)
-            PCIDevSetDeviceId(pPciDev,  0x8C31); /* Lynx Point / 8 Series */
+            PCIDevSetDeviceId(pPciDev,  0x43EE);
         else
-            PCIDevSetDeviceId(pPciDev,  0x1E31); /* Panther Point / 7 Series */
+            PCIDevSetDeviceId(pPciDev,  0x43EE);
     }
 
     PCIDevSetClassProg(pPciDev,         0x30);   /* xHCI */

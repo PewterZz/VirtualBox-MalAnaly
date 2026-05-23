@@ -249,11 +249,11 @@ static DECLCALLBACK(int) lpcConstruct(PPDMDEVINS pDevIns, int iInstance, PCFGMNO
     PPDMPCIDEV pPciDev = pDevIns->apPciDevs[0];
     PDMPCIDEV_ASSERT_VALID(pDevIns, pPciDev);
 
-    PDMPciDevSetVendorId(pPciDev,              0x8086);  /* Intel */
+    PDMPciDevSetVendorId(pPciDev,              0x1022);  /* AMD */
     if (pThis->uIchVersion == 7)
-        PDMPciDevSetDeviceId(pPciDev,          0x27b9);
+        PDMPciDevSetDeviceId(pPciDev,          0x1453);
     else if (pThis->uIchVersion == 9)
-        PDMPciDevSetDeviceId(pPciDev,          0x2918); /** @todo unsure if 0x2918 is the right PCI ID... */
+        PDMPciDevSetDeviceId(pPciDev,          0x1453);
     else
         AssertFailedReturn(VERR_INTERNAL_ERROR_3);
     PDMPciDevSetCommand(pPciDev,                  PCI_COMMAND_IOACCESS | PCI_COMMAND_MEMACCESS | PCI_COMMAND_BUSMASTER);
@@ -264,8 +264,8 @@ static DECLCALLBACK(int) lpcConstruct(PPDMDEVINS pDevIns, int iInstance, PCFGMNO
     PDMPciDevSetHeaderType(pPciDev,               0x80);  /* Normal, multifunction device (so that other devices can be its functions) */
     if (pThis->uIchVersion == 7)
     {
-        PDMPciDevSetSubSystemVendorId(pPciDev,  0x8086);
-        PDMPciDevSetSubSystemId(pPciDev,        0x7270);
+        PDMPciDevSetSubSystemVendorId(pPciDev,  0x1022);
+        PDMPciDevSetSubSystemId(pPciDev,        0x1453);
     }
     else if (pThis->uIchVersion == 9)
     {
